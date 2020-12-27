@@ -1,0 +1,425 @@
+openapi: 3.0.1
+info:
+  contact:
+    email: thomas.yu@sagebionetworks.org
+  description: |
+    This is the submission API to obtain the metadata of the submission
+    and send the submission to execute in the right workflow environment
+  license:
+    name: Apache-2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: challenge.org
+  title: Submission API
+  version: 1.0.0
+servers:
+- url: https://sage-bionetworks.github.io/
+tags:
+- description: Ceate and link synapse queues with workflow engines
+  name: Queue
+- description: Submission and its metadata
+  externalDocs:
+    description: More about submission references
+    url: https://rest-docs.synapse.org/rest/#org.sagebionetworks.repo.web.controller.EvaluationController
+  name: Submission
+paths:
+  /queue:
+    get:
+      description: Returns the queues
+      operationId: list_queues
+      parameters:
+      - description: Maximum number of results returned
+        explode: true
+        in: query
+        name: limit
+        required: false
+        schema:
+          default: 10
+          maximum: 100
+          minimum: 10
+          type: integer
+        style: form
+      - description: Index of the first result that must be returned
+        explode: true
+        in: query
+        name: offset
+        required: false
+        schema:
+          default: 0
+          minimum: 0
+          type: integer
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QueueListResponse'
+          description: Success
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Unauthorized
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: The specified resource was not found
+      summary: List the available queues
+      tags:
+      - Queue
+      x-openapi-router-controller: openapi_server.controllers.queue_controller
+    post:
+      description: Creates a queue for storing and running of submissions
+      operationId: create_queue
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Queue'
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Queue'
+          description: Success
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Unauthorized
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: The specified resource was not found
+        "409":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: The request conflicts with current state of the target resource
+      summary: Create a queue
+      tags:
+      - Queue
+      x-openapi-router-controller: openapi_server.controllers.queue_controller
+  /queue/{queueId}:
+    delete:
+      description: Deletes the queue for a given ID
+      operationId: delete_queue
+      parameters:
+      - description: The ID of the queue
+        explode: false
+        in: path
+        name: queueId
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Queue'
+          description: Success
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Unauthorized
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: The specified resource was not found
+      summary: Delete a queue by its ID
+      tags:
+      - Queue
+      x-openapi-router-controller: openapi_server.controllers.queue_controller
+    get:
+      description: Returns the queue for a given ID
+      operationId: get_queue
+      parameters:
+      - description: The ID of the queue
+        explode: false
+        in: path
+        name: queueId
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Queue'
+          description: Success
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Unauthorized
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: The specified resource was not found
+      summary: Get a queue by its ID
+      tags:
+      - Queue
+      x-openapi-router-controller: openapi_server.controllers.queue_controller
+    put:
+      description: Updates the queue for a given ID
+      operationId: update_queue
+      parameters:
+      - description: The ID of the queue
+        explode: false
+        in: path
+        name: queueId
+        required: true
+        schema:
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Queue'
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Queue'
+          description: Success
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Unauthorized
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: The specified resource was not found
+      summary: Update a queue by its ID
+      tags:
+      - Queue
+      x-openapi-router-controller: openapi_server.controllers.queue_controller
+  /submission:
+    post:
+      description: Creates a submission
+      operationId: create_submission
+      requestBody:
+        content:
+          application/json:
+            schema:
+              oneOf:
+              - $ref: '#/components/schemas/DockerSubmission'
+              - $ref: '#/components/schemas/FileSubmission'
+              - $ref: '#/components/schemas/WorkflowSubmission'
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                oneOf:
+                - $ref: '#/components/schemas/DockerSubmission'
+                - $ref: '#/components/schemas/FileSubmission'
+                - $ref: '#/components/schemas/WorkflowSubmission'
+          description: Success
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Unauthorized
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: The specified resource was not found
+        "409":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: The request conflicts with current state of the target resource
+      summary: Create a submission
+      tags:
+      - Submission
+      x-openapi-router-controller: openapi_server.controllers.submission_controller
+components:
+  responses:
+    Unauthorized:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+      description: Unauthorized
+    NotFound:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+      description: The specified resource was not found
+    Conflict:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+      description: The request conflicts with current state of the target resource
+  schemas:
+    ListResponseMetadata:
+      description: A page of results
+      properties:
+        offset:
+          description: Index of the first result that must be returned
+          type: integer
+        limit:
+          description: Maximum number of results returned
+          type: integer
+        links:
+          $ref: '#/components/schemas/ListResponseMetadata_links'
+      required:
+      - limit
+      - links
+      - offset
+      type: object
+    Queue:
+      description: A Queue to link submissions to runtime
+      example:
+        queueId: 0
+        submissionType: docker
+        workflowFiles:
+        - workflowFiles
+        - workflowFiles
+        workflowInput: workflowInput
+        wesApiHost: local
+      properties:
+        queueId:
+          description: Queue Id
+          type: integer
+        wesApiHost:
+          default: local
+          description: Workflow Execution Service implementation endpoint
+          type: string
+        workflowFiles:
+          description: Workflow/Tool files and templates
+          items:
+            type: string
+          type: array
+        workflowInput:
+          description: Path to workflow inputs
+          type: string
+        submissionType:
+          description: Path to workflow inputs
+          enum:
+          - docker
+          - file
+          - workflow
+          - workflow_inputs
+          type: string
+      type: object
+    QueueListResponse:
+      allOf:
+      - $ref: '#/components/schemas/ListResponseMetadata'
+      - $ref: '#/components/schemas/QueueListResponse_allOf'
+      description: A page of queues
+      type: object
+    Error:
+      description: Problem details (tools.ietf.org/html/rfc7807)
+      properties:
+        title:
+          description: A human readable documentation for the problem type
+          type: string
+        status:
+          description: The HTTP status code
+          type: integer
+        detail:
+          description: A human readable explanation specific to this occurrence of
+            the problem
+          type: string
+        type:
+          description: An absolute URI that identifies the problem type
+          type: string
+      required:
+      - status
+      - title
+      type: object
+    DockerSubmission:
+      description: A Docker Submission
+      properties:
+        submissionId:
+          description: Queue Id
+          type: integer
+        submitter:
+          description: Submitter name
+          type: string
+        docker:
+          $ref: '#/components/schemas/DockerSubmission_docker'
+      type: object
+    FileSubmission:
+      description: A file Submission
+      properties:
+        submissionId:
+          description: Queue Id
+          type: integer
+        submitter:
+          description: Submitter name
+          type: string
+        file:
+          description: File to submit to challenge
+          type: string
+      type: object
+    WorkflowSubmission:
+      description: A workflow Submission
+      properties:
+        submissionId:
+          description: Queue Id
+          type: integer
+        submitter:
+          description: Submitter name
+          type: string
+        workflow:
+          description: Workflow to run
+          type: string
+        workflowInputs:
+          description: Worklfow inputs
+          type: string
+      type: object
+    ListResponseMetadata_links:
+      description: Links to navigate to different pages of results
+      properties:
+        next:
+          description: Link to the next page of results
+          type: string
+    QueueListResponse_allOf:
+      properties:
+        queues:
+          description: An array of queues
+          items:
+            $ref: '#/components/schemas/Queue'
+          type: array
+    DockerSubmission_docker:
+      properties:
+        name:
+          description: Docker repository name
+          type: string
+        digest:
+          description: Docker digest
+          type: string
