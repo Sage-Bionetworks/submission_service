@@ -777,6 +777,60 @@ paths:
       tags:
       - Execution
       x-openapi-router-controller: openapi_server.controllers.execution_controller
+  /queues/{queueId}/submissions/{submissionId}/runs/{runId}/cancel:
+    post:
+      description: Cancels the submission's run for a given run ID. This is dependant
+        on how the compute environment cancels runs.
+      operationId: cancel_submission_run
+      parameters:
+      - description: The ID of the queue
+        explode: false
+        in: path
+        name: queueId
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: The ID of the run
+        explode: false
+        in: path
+        name: runId
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: The ID of the submission
+        explode: false
+        in: path
+        name: submissionId
+        required: true
+        schema:
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RunId'
+      responses:
+        "204":
+          description: The run was cancelled.
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Unauthorized
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: The specified resource was not found
+      summary: Cancels a submission's run
+      tags:
+      - Execution
+      x-openapi-router-controller: openapi_server.controllers.execution_controller
   /queues/{queueId}/submissions/{submissionId}/runs/{runId}/log:
     get:
       description: Returns the submission's logs for a given run ID. This is dependant
