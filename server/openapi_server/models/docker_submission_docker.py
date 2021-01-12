@@ -15,26 +15,31 @@ class DockerSubmissionDocker(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, name=None, digest=None):  # noqa: E501
+    def __init__(self, name=None, digest=None, entrypoint=None):  # noqa: E501
         """DockerSubmissionDocker - a model defined in OpenAPI
 
         :param name: The name of this DockerSubmissionDocker.  # noqa: E501
         :type name: str
         :param digest: The digest of this DockerSubmissionDocker.  # noqa: E501
         :type digest: str
+        :param entrypoint: The entrypoint of this DockerSubmissionDocker.  # noqa: E501
+        :type entrypoint: str
         """
         self.openapi_types = {
             'name': str,
-            'digest': str
+            'digest': str,
+            'entrypoint': str
         }
 
         self.attribute_map = {
             'name': 'name',
-            'digest': 'digest'
+            'digest': 'digest',
+            'entrypoint': 'entrypoint'
         }
 
         self._name = name
         self._digest = digest
+        self._entrypoint = entrypoint
 
     @classmethod
     def from_dict(cls, dikt) -> 'DockerSubmissionDocker':
@@ -67,6 +72,8 @@ class DockerSubmissionDocker(Model):
         :param name: The name of this DockerSubmissionDocker.
         :type name: str
         """
+        if name is None:
+            raise ValueError("Invalid value for `name`, must not be `None`")  # noqa: E501
 
         self._name = name
 
@@ -90,5 +97,30 @@ class DockerSubmissionDocker(Model):
         :param digest: The digest of this DockerSubmissionDocker.
         :type digest: str
         """
+        if digest is None:
+            raise ValueError("Invalid value for `digest`, must not be `None`")  # noqa: E501
 
         self._digest = digest
+
+    @property
+    def entrypoint(self):
+        """Gets the entrypoint of this DockerSubmissionDocker.
+
+        Docker entrypoint.  The default assumes that the docker image is built with a predefined entrypoint.  # noqa: E501
+
+        :return: The entrypoint of this DockerSubmissionDocker.
+        :rtype: str
+        """
+        return self._entrypoint
+
+    @entrypoint.setter
+    def entrypoint(self, entrypoint):
+        """Sets the entrypoint of this DockerSubmissionDocker.
+
+        Docker entrypoint.  The default assumes that the docker image is built with a predefined entrypoint.  # noqa: E501
+
+        :param entrypoint: The entrypoint of this DockerSubmissionDocker.
+        :type entrypoint: str
+        """
+
+        self._entrypoint = entrypoint

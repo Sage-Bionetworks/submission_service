@@ -15,13 +15,13 @@ class Queue(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, queue_id=None, wes_api_host='local', workflow_files=None, workflow_input=None, submission_type=None):  # noqa: E501
+    def __init__(self, name=None, compute_id=None, workflow_files=None, workflow_input=None, submission_type=None):  # noqa: E501
         """Queue - a model defined in OpenAPI
 
-        :param queue_id: The queue_id of this Queue.  # noqa: E501
-        :type queue_id: int
-        :param wes_api_host: The wes_api_host of this Queue.  # noqa: E501
-        :type wes_api_host: str
+        :param name: The name of this Queue.  # noqa: E501
+        :type name: str
+        :param compute_id: The compute_id of this Queue.  # noqa: E501
+        :type compute_id: str
         :param workflow_files: The workflow_files of this Queue.  # noqa: E501
         :type workflow_files: List[str]
         :param workflow_input: The workflow_input of this Queue.  # noqa: E501
@@ -30,23 +30,23 @@ class Queue(Model):
         :type submission_type: str
         """
         self.openapi_types = {
-            'queue_id': int,
-            'wes_api_host': str,
+            'name': str,
+            'compute_id': str,
             'workflow_files': List[str],
             'workflow_input': str,
             'submission_type': str
         }
 
         self.attribute_map = {
-            'queue_id': 'queueId',
-            'wes_api_host': 'wesApiHost',
+            'name': 'name',
+            'compute_id': 'computeId',
             'workflow_files': 'workflowFiles',
             'workflow_input': 'workflowInput',
             'submission_type': 'submissionType'
         }
 
-        self._queue_id = queue_id
-        self._wes_api_host = wes_api_host
+        self._name = name
+        self._compute_id = compute_id
         self._workflow_files = workflow_files
         self._workflow_input = workflow_input
         self._submission_type = submission_type
@@ -63,50 +63,50 @@ class Queue(Model):
         return util.deserialize_model(dikt, cls)
 
     @property
-    def queue_id(self):
-        """Gets the queue_id of this Queue.
+    def name(self):
+        """Gets the name of this Queue.
 
-        Queue Id  # noqa: E501
+        Name of Queue  # noqa: E501
 
-        :return: The queue_id of this Queue.
-        :rtype: int
-        """
-        return self._queue_id
-
-    @queue_id.setter
-    def queue_id(self, queue_id):
-        """Sets the queue_id of this Queue.
-
-        Queue Id  # noqa: E501
-
-        :param queue_id: The queue_id of this Queue.
-        :type queue_id: int
-        """
-
-        self._queue_id = queue_id
-
-    @property
-    def wes_api_host(self):
-        """Gets the wes_api_host of this Queue.
-
-        Workflow Execution Service implementation endpoint  # noqa: E501
-
-        :return: The wes_api_host of this Queue.
+        :return: The name of this Queue.
         :rtype: str
         """
-        return self._wes_api_host
+        return self._name
 
-    @wes_api_host.setter
-    def wes_api_host(self, wes_api_host):
-        """Sets the wes_api_host of this Queue.
+    @name.setter
+    def name(self, name):
+        """Sets the name of this Queue.
 
-        Workflow Execution Service implementation endpoint  # noqa: E501
+        Name of Queue  # noqa: E501
 
-        :param wes_api_host: The wes_api_host of this Queue.
-        :type wes_api_host: str
+        :param name: The name of this Queue.
+        :type name: str
         """
 
-        self._wes_api_host = wes_api_host
+        self._name = name
+
+    @property
+    def compute_id(self):
+        """Gets the compute_id of this Queue.
+
+        Compute Environment Id  # noqa: E501
+
+        :return: The compute_id of this Queue.
+        :rtype: str
+        """
+        return self._compute_id
+
+    @compute_id.setter
+    def compute_id(self, compute_id):
+        """Sets the compute_id of this Queue.
+
+        Compute Environment Id  # noqa: E501
+
+        :param compute_id: The compute_id of this Queue.
+        :type compute_id: str
+        """
+
+        self._compute_id = compute_id
 
     @property
     def workflow_files(self):

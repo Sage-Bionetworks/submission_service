@@ -3,7 +3,9 @@ import six
 
 from openapi_server.models.error import Error  # noqa: E501
 from openapi_server.models.queue import Queue  # noqa: E501
+from openapi_server.models.queue_id import QueueId  # noqa: E501
 from openapi_server.models.queue_list_response import QueueListResponse  # noqa: E501
+from openapi_server.models.queue_response import QueueResponse  # noqa: E501
 from openapi_server import util
 
 
@@ -15,7 +17,7 @@ def create_queue(queue=None):  # noqa: E501
     :param queue: 
     :type queue: dict | bytes
 
-    :rtype: Queue
+    :rtype: QueueId
     """
     if connexion.request.is_json:
         queue = Queue.from_dict(connexion.request.get_json())  # noqa: E501
@@ -30,7 +32,7 @@ def delete_queue(queue_id):  # noqa: E501
     :param queue_id: The ID of the queue
     :type queue_id: str
 
-    :rtype: Queue
+    :rtype: None
     """
     return 'do some magic!'
 
@@ -43,7 +45,7 @@ def get_queue(queue_id):  # noqa: E501
     :param queue_id: The ID of the queue
     :type queue_id: str
 
-    :rtype: Queue
+    :rtype: QueueResponse
     """
     return 'do some magic!'
 
@@ -73,7 +75,7 @@ def update_queue(queue_id, queue=None):  # noqa: E501
     :param queue: 
     :type queue: dict | bytes
 
-    :rtype: Queue
+    :rtype: QueueResponse
     """
     if connexion.request.is_json:
         queue = Queue.from_dict(connexion.request.get_json())  # noqa: E501

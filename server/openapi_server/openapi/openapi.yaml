@@ -16,13 +16,175 @@ servers:
 tags:
 - description: Ceate and link synapse queues with workflow engines
   name: Queue
+- description: Compute environment
+  name: Compute
+- description: Allow synapse submissions to interact with supported workflow engines
+  externalDocs:
+    description: Mimics GA4GH
+    url: https://github.com/ga4gh/workflow-execution-service-schemas
+  name: Execution
 - description: Submission and its metadata
   externalDocs:
     description: More about submission references
     url: https://rest-docs.synapse.org/rest/#org.sagebionetworks.repo.web.controller.EvaluationController
   name: Submission
 paths:
-  /queue:
+  /computeEnvs:
+    get:
+      description: Returns the available compute environments
+      operationId: list_compute_envs
+      parameters:
+      - description: Maximum number of results returned
+        explode: true
+        in: query
+        name: limit
+        required: false
+        schema:
+          default: 10
+          maximum: 100
+          minimum: 10
+          type: integer
+        style: form
+      - description: Index of the first result that must be returned
+        explode: true
+        in: query
+        name: offset
+        required: false
+        schema:
+          default: 0
+          minimum: 0
+          type: integer
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ComputeEnvListResponse'
+          description: Success
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Unauthorized
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: The specified resource was not found
+      summary: List the available compute environments
+      tags:
+      - Compute
+      x-openapi-router-controller: openapi_server.controllers.compute_controller
+    post:
+      description: Creates a compute environment
+      operationId: create_compute_env
+      requestBody:
+        content:
+          application/json:
+            schema:
+              oneOf:
+              - $ref: '#/components/schemas/WesComputeEnv'
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ComputeEnvId'
+          description: Success
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Unauthorized
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: The specified resource was not found
+        "409":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: The request conflicts with current state of the target resource
+      summary: Create a compute environment
+      tags:
+      - Compute
+      x-openapi-router-controller: openapi_server.controllers.compute_controller
+  /computeEnvs/{computeEnvId}:
+    delete:
+      description: Deletes the compute environment for a given ID
+      operationId: delete_compute_env
+      parameters:
+      - description: The ID of the compute environment
+        explode: false
+        in: path
+        name: computeEnvId
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "204":
+          description: The resource was deleted successfully.
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Unauthorized
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: The specified resource was not found
+      summary: Delete a compute environment by its ID
+      tags:
+      - Compute
+      x-openapi-router-controller: openapi_server.controllers.compute_controller
+    get:
+      description: Returns the compute env for a given ID
+      operationId: get_compute_env
+      parameters:
+      - description: The ID of the compute environment
+        explode: false
+        in: path
+        name: computeEnvId
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                oneOf:
+                - $ref: '#/components/schemas/WesComputeEnvResponse'
+          description: Success
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Unauthorized
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: The specified resource was not found
+      summary: Get a compute env by its ID
+      tags:
+      - Compute
+      x-openapi-router-controller: openapi_server.controllers.compute_controller
+  /queues:
     get:
       description: Returns the queues
       operationId: list_queues
@@ -84,7 +246,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Queue'
+                $ref: '#/components/schemas/QueueId'
           description: Success
         "403":
           content:
@@ -108,7 +270,7 @@ paths:
       tags:
       - Queue
       x-openapi-router-controller: openapi_server.controllers.queue_controller
-  /queue/{queueId}:
+  /queues/{queueId}:
     delete:
       description: Deletes the queue for a given ID
       operationId: delete_queue
@@ -122,12 +284,8 @@ paths:
           type: string
         style: simple
       responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Queue'
-          description: Success
+        "204":
+          description: The resource was deleted successfully.
         "403":
           content:
             application/json:
@@ -161,7 +319,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Queue'
+                $ref: '#/components/schemas/QueueResponse'
           description: Success
         "403":
           content:
@@ -201,7 +359,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Queue'
+                $ref: '#/components/schemas/QueueResponse'
           description: Success
         "403":
           content:
@@ -219,10 +377,218 @@ paths:
       tags:
       - Queue
       x-openapi-router-controller: openapi_server.controllers.queue_controller
-  /submission:
+  /queues/{queueId}/submissions:
+    get:
+      description: Returns the submissions from a queue
+      operationId: list_submissions
+      parameters:
+      - description: The ID of the queue
+        explode: false
+        in: path
+        name: queueId
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: Maximum number of results returned
+        explode: true
+        in: query
+        name: limit
+        required: false
+        schema:
+          default: 10
+          maximum: 100
+          minimum: 10
+          type: integer
+        style: form
+      - description: Index of the first result that must be returned
+        explode: true
+        in: query
+        name: offset
+        required: false
+        schema:
+          default: 0
+          minimum: 0
+          type: integer
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SubmissionListResponse'
+          description: Success
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Unauthorized
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: The specified resource was not found
+      summary: List the submitted submissions
+      tags:
+      - Submission
+      x-openapi-router-controller: openapi_server.controllers.submission_controller
     post:
       description: Creates a submission
       operationId: create_submission
+      parameters:
+      - description: The ID of the queue
+        explode: false
+        in: path
+        name: queueId
+        required: true
+        schema:
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              oneOf:
+              - $ref: '#/components/schemas/DockerSubmission'
+              - $ref: '#/components/schemas/FileSubmission'
+              - $ref: '#/components/schemas/WorkflowSubmission'
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SubmissionId'
+          description: Success
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Unauthorized
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: The specified resource was not found
+        "409":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: The request conflicts with current state of the target resource
+      summary: Create a submission
+      tags:
+      - Submission
+      x-openapi-router-controller: openapi_server.controllers.submission_controller
+  /queues/{queueId}/submissions/{submissionId}:
+    delete:
+      description: Deletes the submission for a given ID
+      operationId: delete_submission
+      parameters:
+      - description: The ID of the queue
+        explode: false
+        in: path
+        name: queueId
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: The ID of the submission
+        explode: false
+        in: path
+        name: submissionId
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "204":
+          description: The resource was deleted successfully.
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Unauthorized
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: The specified resource was not found
+      summary: Delete a submission by its ID
+      tags:
+      - Submission
+      x-openapi-router-controller: openapi_server.controllers.submission_controller
+    get:
+      description: Returns the submission for a given ID
+      operationId: get_submission
+      parameters:
+      - description: The ID of the queue
+        explode: false
+        in: path
+        name: queueId
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: The ID of the submission
+        explode: false
+        in: path
+        name: submissionId
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                oneOf:
+                - $ref: '#/components/schemas/DockerSubmission'
+                - $ref: '#/components/schemas/FileSubmission'
+                - $ref: '#/components/schemas/WorkflowSubmission'
+          description: Success
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Unauthorized
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: The specified resource was not found
+      summary: Get a submission by its ID
+      tags:
+      - Submission
+      x-openapi-router-controller: openapi_server.controllers.submission_controller
+    put:
+      description: Updates the submission for a given ID
+      operationId: update_submission
+      parameters:
+      - description: The ID of the queue
+        explode: false
+        in: path
+        name: queueId
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: The ID of the submission
+        explode: false
+        in: path
+        name: submissionId
+        required: true
+        schema:
+          type: string
+        style: simple
       requestBody:
         content:
           application/json:
@@ -253,16 +619,299 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
           description: The specified resource was not found
+      summary: Update a submission by its ID
+      tags:
+      - Submission
+      x-openapi-router-controller: openapi_server.controllers.submission_controller
+  /queues/{queueId}/submissions/{submissionId}/runs:
+    post:
+      description: Executes a submission
+      operationId: run_submission
+      parameters:
+      - description: The ID of the queue
+        explode: false
+        in: path
+        name: queueId
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: The ID of the submission
+        explode: false
+        in: path
+        name: submissionId
+        required: true
+        schema:
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Run'
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RunId'
+          description: Success
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Unauthorized
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: The specified resource was not found
         "409":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
           description: The request conflicts with current state of the target resource
-      summary: Create a submission
+      summary: Executes a submission
+      tags:
+      - Execution
+      x-openapi-router-controller: openapi_server.controllers.execution_controller
+  /queues/{queueId}/submissions/{submissionId}/runs/{runId}:
+    delete:
+      description: Deletes the run for a submission
+      operationId: delete_submission_run
+      parameters:
+      - description: The ID of the queue
+        explode: false
+        in: path
+        name: queueId
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: The ID of the run
+        explode: false
+        in: path
+        name: runId
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: The ID of the submission
+        explode: false
+        in: path
+        name: submissionId
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "204":
+          description: The resource was deleted successfully.
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Unauthorized
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: The specified resource was not found
+      summary: Delete a submission run
+      tags:
+      - Execution
+      x-openapi-router-controller: openapi_server.controllers.execution_controller
+    get:
+      description: Returns the run for a submission
+      operationId: get_submission_run
+      parameters:
+      - description: The ID of the queue
+        explode: false
+        in: path
+        name: queueId
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: The ID of the run
+        explode: false
+        in: path
+        name: runId
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: The ID of the submission
+        explode: false
+        in: path
+        name: submissionId
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RunId'
+          description: Success
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Unauthorized
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: The specified resource was not found
+      summary: Get a submission run
+      tags:
+      - Execution
+      x-openapi-router-controller: openapi_server.controllers.execution_controller
+  /queues/{queueId}/submissions/{submissionId}/runs/{runId}/log:
+    get:
+      description: Returns the submission's logs for a given run ID. This is dependant
+        on how the compute environment returns logs.
+      operationId: get_submission_run_log
+      parameters:
+      - description: The ID of the queue
+        explode: false
+        in: path
+        name: queueId
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: The ID of the run
+        explode: false
+        in: path
+        name: runId
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: The ID of the submission
+        explode: false
+        in: path
+        name: submissionId
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Log'
+          description: Success
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Unauthorized
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: The specified resource was not found
+      summary: Get a submission's run logs
+      tags:
+      - Execution
+      x-openapi-router-controller: openapi_server.controllers.execution_controller
+  /queues/{queueId}/submissions/{submissionId}/status:
+    get:
+      description: Returns the submission's status for a given ID
+      operationId: get_submission_status
+      parameters:
+      - description: The ID of the queue
+        explode: false
+        in: path
+        name: queueId
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: The ID of the submission
+        explode: false
+        in: path
+        name: submissionId
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SubmissionStatus-2'
+          description: Success
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Unauthorized
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: The specified resource was not found
+      summary: Get a submission's status
       tags:
       - Submission
       x-openapi-router-controller: openapi_server.controllers.submission_controller
+  /teams:
+    post:
+      description: Creates a team for submitting
+      operationId: create_team
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Team'
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TeamId'
+          description: Success
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Unauthorized
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: The specified resource was not found
+        "409":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: The request conflicts with current state of the target resource
+      summary: Create a Team
+      tags:
+      - Team
+      x-openapi-router-controller: openapi_server.controllers.team_controller
 components:
   responses:
     Unauthorized:
@@ -300,23 +949,27 @@ components:
       - links
       - offset
       type: object
-    Queue:
+    QueueResponse:
       description: A Queue to link submissions to runtime
       example:
-        queueId: 0
         submissionType: docker
         workflowFiles:
         - workflowFiles
         - workflowFiles
         workflowInput: workflowInput
-        wesApiHost: local
+        computeId: computeId
+        name: name
+        id: 0
+        createdOn: 2000-01-23T04:56:07.000+00:00
       properties:
-        queueId:
+        id:
           description: Queue Id
           type: integer
-        wesApiHost:
-          default: local
-          description: Workflow Execution Service implementation endpoint
+        name:
+          description: Name of Queue
+          type: string
+        computeId:
+          description: Compute Environment Id
           type: string
         workflowFiles:
           description: Workflow/Tool files and templates
@@ -325,6 +978,10 @@ components:
           type: array
         workflowInput:
           description: Path to workflow inputs
+          type: string
+        createdOn:
+          description: Time of creation
+          format: date-time
           type: string
         submissionType:
           description: Path to workflow inputs
@@ -361,45 +1018,292 @@ components:
       - status
       - title
       type: object
+    Queue:
+      description: A Queue to link submissions to runtime
+      example:
+        submissionType: docker
+        workflowFiles:
+        - workflowFiles
+        - workflowFiles
+        workflowInput: workflowInput
+        computeId: computeId
+        name: name
+      properties:
+        name:
+          description: Name of Queue
+          type: string
+        computeId:
+          description: Compute Environment Id
+          type: string
+        workflowFiles:
+          description: Workflow/Tool files and templates
+          items:
+            type: string
+          type: array
+        workflowInput:
+          description: Path to workflow inputs
+          type: string
+        submissionType:
+          description: Path to workflow inputs
+          enum:
+          - docker
+          - file
+          - workflow
+          - workflow_inputs
+          type: string
+      type: object
+    QueueId:
+      example:
+        queueId: queueId
+      properties:
+        queueId:
+          description: Queue ID
+          type: string
+      type: object
+    SubmissionStatus:
+      description: Submission status
+      enum:
+      - RECEIVED
+      - EVALUATION_IN_PROGRESS
+      - INVALID
+      - ACCEPTED
+      - REJECTED
+      - VALIDATED
+      - SCORED
+      - CANCELLED
+      type: string
     DockerSubmission:
       description: A Docker Submission
       properties:
+        name:
+          description: Name of submission
+          type: string
         submissionId:
-          description: Queue Id
+          description: Submission Id
+          readOnly: true
           type: integer
         submitter:
           description: Submitter name
           type: string
+        queueId:
+          description: Queue Id
+          readOnly: true
+          type: string
+        status:
+          $ref: '#/components/schemas/SubmissionStatus'
         docker:
           $ref: '#/components/schemas/DockerSubmission_docker'
-      type: object
-    FileSubmission:
-      description: A file Submission
-      properties:
-        submissionId:
-          description: Queue Id
-          type: integer
-        submitter:
-          description: Submitter name
-          type: string
-        file:
-          description: File to submit to challenge
-          type: string
+      required:
+      - docker
+      - name
+      - submitter
       type: object
     WorkflowSubmission:
       description: A workflow Submission
       properties:
+        name:
+          description: Name of submission
+          type: string
         submissionId:
-          description: Queue Id
+          description: Submission Id
+          readOnly: true
           type: integer
         submitter:
           description: Submitter name
           type: string
+        queueId:
+          description: Queue Id
+          readOnly: true
+          type: string
+        status:
+          $ref: '#/components/schemas/SubmissionStatus'
         workflow:
           description: Workflow to run
           type: string
         workflowInputs:
           description: Worklfow inputs
+          type: string
+      required:
+      - name
+      - submitter
+      type: object
+    FileSubmission:
+      description: A file Submission
+      properties:
+        name:
+          description: Name of submission
+          type: string
+        submissionId:
+          description: Submission Id
+          readOnly: true
+          type: integer
+        submitter:
+          description: Submitter name
+          type: string
+        queueId:
+          description: Queue Id
+          readOnly: true
+          type: string
+        status:
+          $ref: '#/components/schemas/SubmissionStatus'
+        file:
+          description: File to submit to challenge
+          type: string
+      required:
+      - file
+      - name
+      - submitter
+      type: object
+    SubmissionListResponse:
+      allOf:
+      - $ref: '#/components/schemas/ListResponseMetadata'
+      - $ref: '#/components/schemas/SubmissionListResponse_allOf'
+      description: A page of queues
+      type: object
+    SubmissionId:
+      example:
+        submissionId: submissionId
+      properties:
+        submissionId:
+          description: Submission ID
+          type: string
+      type: object
+    SubmissionStatus-2:
+      example: {}
+      properties:
+        status:
+          $ref: '#/components/schemas/SubmissionStatus'
+      type: object
+    Run:
+      example:
+        data: data
+        dataVersion: dataVersion
+      properties:
+        data:
+          description: Data location
+          type: string
+        dataVersion:
+          description: Data version
+          type: string
+      type: object
+    RunId:
+      example:
+        runId: runId
+      properties:
+        runId:
+          description: workflow run ID
+          type: string
+      type: object
+    Log:
+      description: Log and other info
+      example:
+        output: output
+        stdout: stdout
+        name: name
+        exitCode: 0
+        startTime: startTime
+        cmd:
+        - cmd
+        - cmd
+        endTime: endTime
+        stderr: stderr
+      properties:
+        name:
+          description: The task or workflow name
+          type: string
+        cmd:
+          description: The command line that was executed
+          items:
+            type: string
+          type: array
+        startTime:
+          description: When the command started executing, in ISO 8601 format "%Y-%m-%dT%H:%M:%SZ"
+          type: string
+        endTime:
+          description: When the command stopped executing (completed, failed, or cancelled),
+            in ISO 8601 format "%Y-%m-%dT%H:%M:%SZ"
+          type: string
+        stdout:
+          description: A URL to retrieve standard output logs of the workflow run
+            or task.  This URL may change between status requests, or may not be available
+            until the task or workflow has finished execution.  Should be available
+            using the same credentials used to access the WES endpoint.
+          type: string
+        stderr:
+          description: A URL to retrieve standard error logs of the workflow run or
+            task.  This URL may change between status requests, or may not be available
+            until the task or workflow has finished execution.  Should be available
+            using the same credentials used to access the WES endpoint.
+          type: string
+        exitCode:
+          description: Exit code of the program
+          type: integer
+        output:
+          description: Output of workflow
+          type: string
+      type: object
+    WesComputeEnvResponse:
+      description: A workflow Submission
+      properties:
+        id:
+          description: Compute environment ID
+          type: string
+        name:
+          description: Name of compute environment
+          type: string
+        wesApiHost:
+          default: localhost:8080
+          description: Workflow Execution Service implementation endpoint
+          type: string
+      type: object
+    ComputeEnvListResponse:
+      allOf:
+      - $ref: '#/components/schemas/ListResponseMetadata'
+      - $ref: '#/components/schemas/ComputeEnvListResponse_allOf'
+      description: A page of queues
+      type: object
+    WesComputeEnv:
+      description: A workflow Submission
+      properties:
+        name:
+          description: Name of compute environment
+          type: string
+        wesApiHost:
+          default: localhost:8080
+          description: Workflow Execution Service implementation endpoint
+          type: string
+      type: object
+    ComputeEnvId:
+      example:
+        computeEnvId: computeEnvId
+      properties:
+        computeEnvId:
+          description: Compute environment ID
+          type: string
+      type: object
+    Team:
+      example:
+        teamId: teamId
+        name: name
+        description: description
+      properties:
+        teamId:
+          description: ID of team.
+          readOnly: true
+          type: string
+        name:
+          description: Name of team.
+          type: string
+        description:
+          description: Description of Team.
+          type: string
+      type: object
+    TeamId:
+      example:
+        teamId: teamId
+      properties:
+        teamId:
+          description: Team ID
           type: string
       type: object
     ListResponseMetadata_links:
@@ -413,7 +1317,7 @@ components:
         queues:
           description: An array of queues
           items:
-            $ref: '#/components/schemas/Queue'
+            $ref: '#/components/schemas/QueueResponse'
           type: array
     DockerSubmission_docker:
       properties:
@@ -423,3 +1327,28 @@ components:
         digest:
           description: Docker digest
           type: string
+        entrypoint:
+          description: Docker entrypoint.  The default assumes that the docker image
+            is built with a predefined entrypoint.
+          type: string
+      required:
+      - digest
+      - name
+    SubmissionListResponse_allOf:
+      properties:
+        submissions:
+          description: An array of queues
+          items:
+            oneOf:
+            - $ref: '#/components/schemas/DockerSubmission'
+            - $ref: '#/components/schemas/WorkflowSubmission'
+            - $ref: '#/components/schemas/FileSubmission'
+          type: array
+    ComputeEnvListResponse_allOf:
+      properties:
+        computeEnvs:
+          description: An array of queues
+          items:
+            oneOf:
+            - $ref: '#/components/schemas/WesComputeEnvResponse'
+          type: array
