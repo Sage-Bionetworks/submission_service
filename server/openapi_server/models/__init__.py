@@ -12,6 +12,7 @@ from openapi_server.models.create_queue_request import CreateQueueRequest
 from openapi_server.models.create_queue_response import CreateQueueResponse
 from openapi_server.models.create_run_request import CreateRunRequest
 from openapi_server.models.create_run_response import CreateRunResponse
+from openapi_server.models.create_submission_request import CreateSubmissionRequest
 from openapi_server.models.create_submission_response import CreateSubmissionResponse
 from openapi_server.models.create_team_request import CreateTeamRequest
 from openapi_server.models.create_team_response import CreateTeamResponse
@@ -31,6 +32,6 @@ from openapi_server.models.list_submission_response_all_of import ListSubmission
 from openapi_server.models.log import Log
 from openapi_server.models.queue import Queue
 from openapi_server.models.run import Run
+from openapi_server.models.submission import Submission
 from openapi_server.models.submission_status import SubmissionStatus
-from openapi_server.models.submission_status2 import SubmissionStatus2
 from openapi_server.models.workflow_submission import WorkflowSubmission

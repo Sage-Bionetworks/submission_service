@@ -1,30 +1,29 @@
 import connexion
 import six
 
+from openapi_server.models.create_submission_request import CreateSubmissionRequest  # noqa: E501
 from openapi_server.models.create_submission_response import CreateSubmissionResponse  # noqa: E501
 from openapi_server.models.error import Error  # noqa: E501
 from openapi_server.models.list_submission_response import ListSubmissionResponse  # noqa: E501
-from openapi_server.models.one_of_create_docker_submission_request_create_file_submission_request_create_workflow_submission_request import OneOfCreateDockerSubmissionRequestCreateFileSubmissionRequestCreateWorkflowSubmissionRequest  # noqa: E501
-from openapi_server.models.one_of_docker_submission_file_submission_workflow_submission import OneOfDockerSubmissionFileSubmissionWorkflowSubmission  # noqa: E501
-from openapi_server.models.submission_status2 import SubmissionStatus2  # noqa: E501
-from openapi_server.models.unknownbasetype import UNKNOWN_BASE_TYPE  # noqa: E501
+from openapi_server.models.submission import Submission  # noqa: E501
+from openapi_server.models.submission_status import SubmissionStatus  # noqa: E501
 from openapi_server import util
 
 
-def create_submission(queue_id, unknown_base_type=None):  # noqa: E501
+def create_submission(queue_id, create_submission_request=None):  # noqa: E501
     """Create a submission
 
     Creates a submission # noqa: E501
 
     :param queue_id: The ID of the queue
     :type queue_id: str
-    :param unknown_base_type: 
-    :type unknown_base_type: dict | bytes
+    :param create_submission_request: 
+    :type create_submission_request: dict | bytes
 
     :rtype: CreateSubmissionResponse
     """
     if connexion.request.is_json:
-        unknown_base_type = UNKNOWN_BASE_TYPE.from_dict(connexion.request.get_json())  # noqa: E501
+        create_submission_request = CreateSubmissionRequest.from_dict(connexion.request.get_json())  # noqa: E501
     return 'do some magic!'
 
 
@@ -53,7 +52,7 @@ def get_submission(queue_id, submission_id):  # noqa: E501
     :param submission_id: The ID of the submission
     :type submission_id: str
 
-    :rtype: OneOfDockerSubmissionFileSubmissionWorkflowSubmission
+    :rtype: Submission
     """
     return 'do some magic!'
 
@@ -68,7 +67,7 @@ def get_submission_status(queue_id, submission_id):  # noqa: E501
     :param submission_id: The ID of the submission
     :type submission_id: str
 
-    :rtype: SubmissionStatus2
+    :rtype: SubmissionStatus
     """
     return 'do some magic!'
 
@@ -90,7 +89,7 @@ def list_submissions(queue_id, limit=None, offset=None):  # noqa: E501
     return 'do some magic!'
 
 
-def update_submission(queue_id, submission_id, unknown_base_type=None):  # noqa: E501
+def update_submission(queue_id, submission_id, submission=None):  # noqa: E501
     """Update a submission by its ID
 
     Updates the submission for a given ID # noqa: E501
@@ -99,11 +98,11 @@ def update_submission(queue_id, submission_id, unknown_base_type=None):  # noqa:
     :type queue_id: str
     :param submission_id: The ID of the submission
     :type submission_id: str
-    :param unknown_base_type: 
-    :type unknown_base_type: dict | bytes
+    :param submission: 
+    :type submission: dict | bytes
 
-    :rtype: OneOfDockerSubmissionFileSubmissionWorkflowSubmission
+    :rtype: Submission
     """
     if connexion.request.is_json:
-        unknown_base_type = UNKNOWN_BASE_TYPE.from_dict(connexion.request.get_json())  # noqa: E501
+        submission = Submission.from_dict(connexion.request.get_json())  # noqa: E501
     return 'do some magic!'

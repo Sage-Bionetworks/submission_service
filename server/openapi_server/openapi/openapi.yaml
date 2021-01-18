@@ -450,10 +450,7 @@ paths:
         content:
           application/json:
             schema:
-              oneOf:
-              - $ref: '#/components/schemas/CreateDockerSubmissionRequest'
-              - $ref: '#/components/schemas/CreateFileSubmissionRequest'
-              - $ref: '#/components/schemas/CreateWorkflowSubmissionRequest'
+              $ref: '#/components/schemas/CreateSubmissionRequest'
       responses:
         "201":
           content:
@@ -548,10 +545,7 @@ paths:
           content:
             application/json:
               schema:
-                oneOf:
-                - $ref: '#/components/schemas/DockerSubmission'
-                - $ref: '#/components/schemas/FileSubmission'
-                - $ref: '#/components/schemas/WorkflowSubmission'
+                $ref: '#/components/schemas/Submission'
           description: Success
         "403":
           content:
@@ -593,19 +587,13 @@ paths:
         content:
           application/json:
             schema:
-              oneOf:
-              - $ref: '#/components/schemas/DockerSubmission'
-              - $ref: '#/components/schemas/FileSubmission'
-              - $ref: '#/components/schemas/WorkflowSubmission'
+              $ref: '#/components/schemas/Submission'
       responses:
         "200":
           content:
             application/json:
               schema:
-                oneOf:
-                - $ref: '#/components/schemas/DockerSubmission'
-                - $ref: '#/components/schemas/FileSubmission'
-                - $ref: '#/components/schemas/WorkflowSubmission'
+                $ref: '#/components/schemas/Submission'
           description: Success
         "403":
           content:
@@ -910,7 +898,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SubmissionStatus-2'
+                $ref: '#/components/schemas/SubmissionStatus'
           description: Success
         "403":
           content:
@@ -1154,6 +1142,27 @@ components:
         docker:
           $ref: '#/components/schemas/DockerSubmission_docker'
       type: object
+    FileSubmission:
+      description: A file Submission
+      properties:
+        name:
+          description: Name of submission
+          type: string
+        id:
+          description: Submission Id
+          type: integer
+        submitter:
+          description: Submitter name
+          type: string
+        queueId:
+          description: Queue Id
+          type: string
+        status:
+          $ref: '#/components/schemas/SubmissionStatus'
+        file:
+          description: File to submit to challenge
+          type: string
+      type: object
     WorkflowSubmission:
       description: A workflow Submission
       properties:
@@ -1178,27 +1187,11 @@ components:
           description: Worklfow inputs
           type: string
       type: object
-    FileSubmission:
-      description: A file Submission
-      properties:
-        name:
-          description: Name of submission
-          type: string
-        id:
-          description: Submission Id
-          type: integer
-        submitter:
-          description: Submitter name
-          type: string
-        queueId:
-          description: Queue Id
-          type: string
-        status:
-          $ref: '#/components/schemas/SubmissionStatus'
-        file:
-          description: File to submit to challenge
-          type: string
-      type: object
+    Submission:
+      oneOf:
+      - $ref: '#/components/schemas/DockerSubmission'
+      - $ref: '#/components/schemas/FileSubmission'
+      - $ref: '#/components/schemas/WorkflowSubmission'
     ListSubmissionResponse:
       allOf:
       - $ref: '#/components/schemas/ListResponseMetadata'
@@ -1257,12 +1250,17 @@ components:
           description: Workflow to run
           type: string
         workflowInputs:
-          description: Worklfow inputs
+          description: Workflow inputs
           type: string
       required:
       - name
       - submitter
       type: object
+    CreateSubmissionRequest:
+      oneOf:
+      - $ref: '#/components/schemas/CreateDockerSubmissionRequest'
+      - $ref: '#/components/schemas/CreateFileSubmissionRequest'
+      - $ref: '#/components/schemas/CreateWorkflowSubmissionRequest'
     CreateSubmissionResponse:
       example:
         submissionId: submissionId
@@ -1270,15 +1268,6 @@ components:
         submissionId:
           description: Submission ID
           type: string
-      type: object
-    SubmissionStatus-2:
-      example:
-        status:
-          numberOfRuns: 0
-          status: RECEIVED
-      properties:
-        status:
-          $ref: '#/components/schemas/SubmissionStatus'
       type: object
     CreateRunRequest:
       example:
@@ -1493,10 +1482,7 @@ components:
         submissions:
           description: An array of queues
           items:
-            oneOf:
-            - $ref: '#/components/schemas/DockerSubmission'
-            - $ref: '#/components/schemas/WorkflowSubmission'
-            - $ref: '#/components/schemas/FileSubmission'
+            $ref: '#/components/schemas/Submission'
           type: array
     ListComputeEnvResponse_allOf:
       properties:
