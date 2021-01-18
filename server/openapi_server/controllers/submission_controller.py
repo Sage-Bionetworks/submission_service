@@ -1,10 +1,11 @@
 import connexion
 import six
 
+from openapi_server.models.create_submission_response import CreateSubmissionResponse  # noqa: E501
 from openapi_server.models.error import Error  # noqa: E501
+from openapi_server.models.list_submission_response import ListSubmissionResponse  # noqa: E501
+from openapi_server.models.one_of_create_docker_submission_request_create_file_submission_request_create_workflow_submission_request import OneOfCreateDockerSubmissionRequestCreateFileSubmissionRequestCreateWorkflowSubmissionRequest  # noqa: E501
 from openapi_server.models.one_of_docker_submission_file_submission_workflow_submission import OneOfDockerSubmissionFileSubmissionWorkflowSubmission  # noqa: E501
-from openapi_server.models.submission_id import SubmissionId  # noqa: E501
-from openapi_server.models.submission_list_response import SubmissionListResponse  # noqa: E501
 from openapi_server.models.submission_status2 import SubmissionStatus2  # noqa: E501
 from openapi_server.models.unknownbasetype import UNKNOWN_BASE_TYPE  # noqa: E501
 from openapi_server import util
@@ -20,7 +21,7 @@ def create_submission(queue_id, unknown_base_type=None):  # noqa: E501
     :param unknown_base_type: 
     :type unknown_base_type: dict | bytes
 
-    :rtype: SubmissionId
+    :rtype: CreateSubmissionResponse
     """
     if connexion.request.is_json:
         unknown_base_type = UNKNOWN_BASE_TYPE.from_dict(connexion.request.get_json())  # noqa: E501
@@ -84,7 +85,7 @@ def list_submissions(queue_id, limit=None, offset=None):  # noqa: E501
     :param offset: Index of the first result that must be returned
     :type offset: int
 
-    :rtype: SubmissionListResponse
+    :rtype: ListSubmissionResponse
     """
     return 'do some magic!'
 

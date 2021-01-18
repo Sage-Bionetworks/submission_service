@@ -1,26 +1,26 @@
 import connexion
 import six
 
+from openapi_server.models.create_queue_request import CreateQueueRequest  # noqa: E501
+from openapi_server.models.create_queue_response import CreateQueueResponse  # noqa: E501
 from openapi_server.models.error import Error  # noqa: E501
+from openapi_server.models.list_queue_response import ListQueueResponse  # noqa: E501
 from openapi_server.models.queue import Queue  # noqa: E501
-from openapi_server.models.queue_id import QueueId  # noqa: E501
-from openapi_server.models.queue_list_response import QueueListResponse  # noqa: E501
-from openapi_server.models.queue_response import QueueResponse  # noqa: E501
 from openapi_server import util
 
 
-def create_queue(queue=None):  # noqa: E501
+def create_queue(create_queue_request=None):  # noqa: E501
     """Create a queue
 
     Creates a queue for storing and running of submissions # noqa: E501
 
-    :param queue: 
-    :type queue: dict | bytes
+    :param create_queue_request: 
+    :type create_queue_request: dict | bytes
 
-    :rtype: QueueId
+    :rtype: CreateQueueResponse
     """
     if connexion.request.is_json:
-        queue = Queue.from_dict(connexion.request.get_json())  # noqa: E501
+        create_queue_request = CreateQueueRequest.from_dict(connexion.request.get_json())  # noqa: E501
     return 'do some magic!'
 
 
@@ -45,7 +45,7 @@ def get_queue(queue_id):  # noqa: E501
     :param queue_id: The ID of the queue
     :type queue_id: str
 
-    :rtype: QueueResponse
+    :rtype: Queue
     """
     return 'do some magic!'
 
@@ -60,7 +60,7 @@ def list_queues(limit=None, offset=None):  # noqa: E501
     :param offset: Index of the first result that must be returned
     :type offset: int
 
-    :rtype: QueueListResponse
+    :rtype: ListQueueResponse
     """
     return 'do some magic!'
 
@@ -75,7 +75,7 @@ def update_queue(queue_id, queue=None):  # noqa: E501
     :param queue: 
     :type queue: dict | bytes
 
-    :rtype: QueueResponse
+    :rtype: Queue
     """
     if connexion.request.is_json:
         queue = Queue.from_dict(connexion.request.get_json())  # noqa: E501

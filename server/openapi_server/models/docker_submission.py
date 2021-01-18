@@ -19,13 +19,13 @@ class DockerSubmission(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, name=None, submission_id=None, submitter=None, queue_id=None, status=None, docker=None):  # noqa: E501
+    def __init__(self, name=None, id=None, submitter=None, queue_id=None, status=None, docker=None):  # noqa: E501
         """DockerSubmission - a model defined in OpenAPI
 
         :param name: The name of this DockerSubmission.  # noqa: E501
         :type name: str
-        :param submission_id: The submission_id of this DockerSubmission.  # noqa: E501
-        :type submission_id: int
+        :param id: The id of this DockerSubmission.  # noqa: E501
+        :type id: int
         :param submitter: The submitter of this DockerSubmission.  # noqa: E501
         :type submitter: str
         :param queue_id: The queue_id of this DockerSubmission.  # noqa: E501
@@ -37,7 +37,7 @@ class DockerSubmission(Model):
         """
         self.openapi_types = {
             'name': str,
-            'submission_id': int,
+            'id': int,
             'submitter': str,
             'queue_id': str,
             'status': SubmissionStatus,
@@ -46,7 +46,7 @@ class DockerSubmission(Model):
 
         self.attribute_map = {
             'name': 'name',
-            'submission_id': 'submissionId',
+            'id': 'id',
             'submitter': 'submitter',
             'queue_id': 'queueId',
             'status': 'status',
@@ -54,7 +54,7 @@ class DockerSubmission(Model):
         }
 
         self._name = name
-        self._submission_id = submission_id
+        self._id = id
         self._submitter = submitter
         self._queue_id = queue_id
         self._status = status
@@ -91,33 +91,31 @@ class DockerSubmission(Model):
         :param name: The name of this DockerSubmission.
         :type name: str
         """
-        if name is None:
-            raise ValueError("Invalid value for `name`, must not be `None`")  # noqa: E501
 
         self._name = name
 
     @property
-    def submission_id(self):
-        """Gets the submission_id of this DockerSubmission.
+    def id(self):
+        """Gets the id of this DockerSubmission.
 
         Submission Id  # noqa: E501
 
-        :return: The submission_id of this DockerSubmission.
+        :return: The id of this DockerSubmission.
         :rtype: int
         """
-        return self._submission_id
+        return self._id
 
-    @submission_id.setter
-    def submission_id(self, submission_id):
-        """Sets the submission_id of this DockerSubmission.
+    @id.setter
+    def id(self, id):
+        """Sets the id of this DockerSubmission.
 
         Submission Id  # noqa: E501
 
-        :param submission_id: The submission_id of this DockerSubmission.
-        :type submission_id: int
+        :param id: The id of this DockerSubmission.
+        :type id: int
         """
 
-        self._submission_id = submission_id
+        self._id = id
 
     @property
     def submitter(self):
@@ -139,8 +137,6 @@ class DockerSubmission(Model):
         :param submitter: The submitter of this DockerSubmission.
         :type submitter: str
         """
-        if submitter is None:
-            raise ValueError("Invalid value for `submitter`, must not be `None`")  # noqa: E501
 
         self._submitter = submitter
 
@@ -206,7 +202,5 @@ class DockerSubmission(Model):
         :param docker: The docker of this DockerSubmission.
         :type docker: DockerSubmissionDocker
         """
-        if docker is None:
-            raise ValueError("Invalid value for `docker`, must not be `None`")  # noqa: E501
 
         self._docker = docker

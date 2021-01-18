@@ -15,9 +15,11 @@ class Queue(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, name=None, compute_id=None, workflow_files=None, workflow_input=None, submission_type=None):  # noqa: E501
+    def __init__(self, id=None, name=None, compute_id=None, workflow_files=None, workflow_input=None, created_on=None, submission_type=None):  # noqa: E501
         """Queue - a model defined in OpenAPI
 
+        :param id: The id of this Queue.  # noqa: E501
+        :type id: int
         :param name: The name of this Queue.  # noqa: E501
         :type name: str
         :param compute_id: The compute_id of this Queue.  # noqa: E501
@@ -26,29 +28,37 @@ class Queue(Model):
         :type workflow_files: List[str]
         :param workflow_input: The workflow_input of this Queue.  # noqa: E501
         :type workflow_input: str
+        :param created_on: The created_on of this Queue.  # noqa: E501
+        :type created_on: datetime
         :param submission_type: The submission_type of this Queue.  # noqa: E501
         :type submission_type: str
         """
         self.openapi_types = {
+            'id': int,
             'name': str,
             'compute_id': str,
             'workflow_files': List[str],
             'workflow_input': str,
+            'created_on': datetime,
             'submission_type': str
         }
 
         self.attribute_map = {
+            'id': 'id',
             'name': 'name',
             'compute_id': 'computeId',
             'workflow_files': 'workflowFiles',
             'workflow_input': 'workflowInput',
+            'created_on': 'createdOn',
             'submission_type': 'submissionType'
         }
 
+        self._id = id
         self._name = name
         self._compute_id = compute_id
         self._workflow_files = workflow_files
         self._workflow_input = workflow_input
+        self._created_on = created_on
         self._submission_type = submission_type
 
     @classmethod
@@ -61,6 +71,29 @@ class Queue(Model):
         :rtype: Queue
         """
         return util.deserialize_model(dikt, cls)
+
+    @property
+    def id(self):
+        """Gets the id of this Queue.
+
+        Queue Id  # noqa: E501
+
+        :return: The id of this Queue.
+        :rtype: int
+        """
+        return self._id
+
+    @id.setter
+    def id(self, id):
+        """Sets the id of this Queue.
+
+        Queue Id  # noqa: E501
+
+        :param id: The id of this Queue.
+        :type id: int
+        """
+
+        self._id = id
 
     @property
     def name(self):
@@ -153,6 +186,29 @@ class Queue(Model):
         """
 
         self._workflow_input = workflow_input
+
+    @property
+    def created_on(self):
+        """Gets the created_on of this Queue.
+
+        Time of creation  # noqa: E501
+
+        :return: The created_on of this Queue.
+        :rtype: datetime
+        """
+        return self._created_on
+
+    @created_on.setter
+    def created_on(self, created_on):
+        """Sets the created_on of this Queue.
+
+        Time of creation  # noqa: E501
+
+        :param created_on: The created_on of this Queue.
+        :type created_on: datetime
+        """
+
+        self._created_on = created_on
 
     @property
     def submission_type(self):

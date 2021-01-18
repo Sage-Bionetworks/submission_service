@@ -17,13 +17,13 @@ class WorkflowSubmission(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, name=None, submission_id=None, submitter=None, queue_id=None, status=None, workflow=None, workflow_inputs=None):  # noqa: E501
+    def __init__(self, name=None, id=None, submitter=None, queue_id=None, status=None, workflow=None, workflow_inputs=None):  # noqa: E501
         """WorkflowSubmission - a model defined in OpenAPI
 
         :param name: The name of this WorkflowSubmission.  # noqa: E501
         :type name: str
-        :param submission_id: The submission_id of this WorkflowSubmission.  # noqa: E501
-        :type submission_id: int
+        :param id: The id of this WorkflowSubmission.  # noqa: E501
+        :type id: int
         :param submitter: The submitter of this WorkflowSubmission.  # noqa: E501
         :type submitter: str
         :param queue_id: The queue_id of this WorkflowSubmission.  # noqa: E501
@@ -37,7 +37,7 @@ class WorkflowSubmission(Model):
         """
         self.openapi_types = {
             'name': str,
-            'submission_id': int,
+            'id': int,
             'submitter': str,
             'queue_id': str,
             'status': SubmissionStatus,
@@ -47,7 +47,7 @@ class WorkflowSubmission(Model):
 
         self.attribute_map = {
             'name': 'name',
-            'submission_id': 'submissionId',
+            'id': 'id',
             'submitter': 'submitter',
             'queue_id': 'queueId',
             'status': 'status',
@@ -56,7 +56,7 @@ class WorkflowSubmission(Model):
         }
 
         self._name = name
-        self._submission_id = submission_id
+        self._id = id
         self._submitter = submitter
         self._queue_id = queue_id
         self._status = status
@@ -94,33 +94,31 @@ class WorkflowSubmission(Model):
         :param name: The name of this WorkflowSubmission.
         :type name: str
         """
-        if name is None:
-            raise ValueError("Invalid value for `name`, must not be `None`")  # noqa: E501
 
         self._name = name
 
     @property
-    def submission_id(self):
-        """Gets the submission_id of this WorkflowSubmission.
+    def id(self):
+        """Gets the id of this WorkflowSubmission.
 
         Submission Id  # noqa: E501
 
-        :return: The submission_id of this WorkflowSubmission.
+        :return: The id of this WorkflowSubmission.
         :rtype: int
         """
-        return self._submission_id
+        return self._id
 
-    @submission_id.setter
-    def submission_id(self, submission_id):
-        """Sets the submission_id of this WorkflowSubmission.
+    @id.setter
+    def id(self, id):
+        """Sets the id of this WorkflowSubmission.
 
         Submission Id  # noqa: E501
 
-        :param submission_id: The submission_id of this WorkflowSubmission.
-        :type submission_id: int
+        :param id: The id of this WorkflowSubmission.
+        :type id: int
         """
 
-        self._submission_id = submission_id
+        self._id = id
 
     @property
     def submitter(self):
@@ -142,8 +140,6 @@ class WorkflowSubmission(Model):
         :param submitter: The submitter of this WorkflowSubmission.
         :type submitter: str
         """
-        if submitter is None:
-            raise ValueError("Invalid value for `submitter`, must not be `None`")  # noqa: E501
 
         self._submitter = submitter
 

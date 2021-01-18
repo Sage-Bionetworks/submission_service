@@ -17,13 +17,13 @@ class FileSubmission(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, name=None, submission_id=None, submitter=None, queue_id=None, status=None, file=None):  # noqa: E501
+    def __init__(self, name=None, id=None, submitter=None, queue_id=None, status=None, file=None):  # noqa: E501
         """FileSubmission - a model defined in OpenAPI
 
         :param name: The name of this FileSubmission.  # noqa: E501
         :type name: str
-        :param submission_id: The submission_id of this FileSubmission.  # noqa: E501
-        :type submission_id: int
+        :param id: The id of this FileSubmission.  # noqa: E501
+        :type id: int
         :param submitter: The submitter of this FileSubmission.  # noqa: E501
         :type submitter: str
         :param queue_id: The queue_id of this FileSubmission.  # noqa: E501
@@ -35,7 +35,7 @@ class FileSubmission(Model):
         """
         self.openapi_types = {
             'name': str,
-            'submission_id': int,
+            'id': int,
             'submitter': str,
             'queue_id': str,
             'status': SubmissionStatus,
@@ -44,7 +44,7 @@ class FileSubmission(Model):
 
         self.attribute_map = {
             'name': 'name',
-            'submission_id': 'submissionId',
+            'id': 'id',
             'submitter': 'submitter',
             'queue_id': 'queueId',
             'status': 'status',
@@ -52,7 +52,7 @@ class FileSubmission(Model):
         }
 
         self._name = name
-        self._submission_id = submission_id
+        self._id = id
         self._submitter = submitter
         self._queue_id = queue_id
         self._status = status
@@ -89,33 +89,31 @@ class FileSubmission(Model):
         :param name: The name of this FileSubmission.
         :type name: str
         """
-        if name is None:
-            raise ValueError("Invalid value for `name`, must not be `None`")  # noqa: E501
 
         self._name = name
 
     @property
-    def submission_id(self):
-        """Gets the submission_id of this FileSubmission.
+    def id(self):
+        """Gets the id of this FileSubmission.
 
         Submission Id  # noqa: E501
 
-        :return: The submission_id of this FileSubmission.
+        :return: The id of this FileSubmission.
         :rtype: int
         """
-        return self._submission_id
+        return self._id
 
-    @submission_id.setter
-    def submission_id(self, submission_id):
-        """Sets the submission_id of this FileSubmission.
+    @id.setter
+    def id(self, id):
+        """Sets the id of this FileSubmission.
 
         Submission Id  # noqa: E501
 
-        :param submission_id: The submission_id of this FileSubmission.
-        :type submission_id: int
+        :param id: The id of this FileSubmission.
+        :type id: int
         """
 
-        self._submission_id = submission_id
+        self._id = id
 
     @property
     def submitter(self):
@@ -137,8 +135,6 @@ class FileSubmission(Model):
         :param submitter: The submitter of this FileSubmission.
         :type submitter: str
         """
-        if submitter is None:
-            raise ValueError("Invalid value for `submitter`, must not be `None`")  # noqa: E501
 
         self._submitter = submitter
 
@@ -206,7 +202,5 @@ class FileSubmission(Model):
         :param file: The file of this FileSubmission.
         :type file: str
         """
-        if file is None:
-            raise ValueError("Invalid value for `file`, must not be `None`")  # noqa: E501
 
         self._file = file
