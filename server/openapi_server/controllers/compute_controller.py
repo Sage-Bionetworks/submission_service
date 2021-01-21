@@ -1,15 +1,18 @@
 import connexion
 import six
 
-from openapi_server.models.compute_env import ComputeEnv  # noqa: E501
-from openapi_server.models.create_compute_env_request import CreateComputeEnvRequest  # noqa: E501
-from openapi_server.models.create_compute_env_response import CreateComputeEnvResponse  # noqa: E501
-from openapi_server.models.error import Error  # noqa: E501
-from openapi_server.models.list_compute_env_response import ListComputeEnvResponse  # noqa: E501
+from openapi_server.models import ComputeEnv  # noqa: E501
+from openapi_server.models import CreateComputeEnvRequest  # noqa: E501
+from openapi_server.models import CreateComputeEnvResponse  # noqa: E501
+from openapi_server.models import Error  # noqa: E501
+from openapi_server.models import ListComputeEnvResponse  # noqa: E501
 from openapi_server import util
+from openapi_server.core.controllers import compute_controller as controller
 
 
-def create_compute_env(create_compute_env_request=None):  # noqa: E501
+def create_compute_env(
+    create_compute_env_request
+):  # noqa: E501
     """Create a compute environment
 
     Creates a compute environment # noqa: E501
@@ -21,10 +24,14 @@ def create_compute_env(create_compute_env_request=None):  # noqa: E501
     """
     if connexion.request.is_json:
         create_compute_env_request = CreateComputeEnvRequest.from_dict(connexion.request.get_json())  # noqa: E501
-    return 'do some magic!'
+    return controller.create_compute_env(
+        create_compute_env_request=create_compute_env_request
+    )
 
 
-def delete_compute_env(compute_env_id):  # noqa: E501
+def delete_compute_env(
+    compute_env_id
+):  # noqa: E501
     """Delete a compute environment by its ID
 
     Deletes the compute environment for a given ID # noqa: E501
@@ -34,10 +41,14 @@ def delete_compute_env(compute_env_id):  # noqa: E501
 
     :rtype: None
     """
-    return 'do some magic!'
+    return controller.delete_compute_env(
+        compute_env_id=compute_env_id
+    )
 
 
-def get_compute_env(compute_env_id):  # noqa: E501
+def get_compute_env(
+    compute_env_id
+):  # noqa: E501
     """Get a compute env by its ID
 
     Returns the compute env for a given ID # noqa: E501
@@ -47,10 +58,15 @@ def get_compute_env(compute_env_id):  # noqa: E501
 
     :rtype: ComputeEnv
     """
-    return 'do some magic!'
+    return controller.get_compute_env(
+        compute_env_id=compute_env_id
+    )
 
 
-def list_compute_envs(limit=None, offset=None):  # noqa: E501
+def list_compute_envs(
+    limit=10,
+    offset=0
+):  # noqa: E501
     """List the available compute environments
 
     Returns the available compute environments # noqa: E501
@@ -62,4 +78,7 @@ def list_compute_envs(limit=None, offset=None):  # noqa: E501
 
     :rtype: ListComputeEnvResponse
     """
-    return 'do some magic!'
+    return controller.list_compute_envs(
+        limit=limit,
+        offset=offset
+    )
