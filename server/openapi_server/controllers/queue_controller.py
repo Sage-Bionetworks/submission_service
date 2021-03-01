@@ -1,4 +1,5 @@
 import connexion
+from mongoengine.errors import DoesNotExist, NotUniqueError
 import six
 
 from openapi_server.models.create_queue_request import CreateQueueRequest  # noqa: E501
@@ -9,7 +10,7 @@ from openapi_server.models.queue import Queue  # noqa: E501
 from openapi_server import util
 
 
-def create_queue(create_queue_request=None):  # noqa: E501
+def create_queue(queue_id):  # noqa: E501
     """Create a queue
 
     Creates a queue for storing and running of submissions # noqa: E501
@@ -19,9 +20,31 @@ def create_queue(create_queue_request=None):  # noqa: E501
 
     :rtype: CreateQueueResponse
     """
-    if connexion.request.is_json:
-        create_queue_request = CreateQueueRequest.from_dict(connexion.request.get_json())  # noqa: E501
-    return 'do some magic!'
+    res = None
+    status = None
+    try:
+        try:
+            create_queue_request = CreateQueueRequest.from_dict(
+                connexion.request.get_json()
+            )
+            print(create_queue_request)
+            # DbPatient(
+            #     resourceName=resource_name,
+            #     fhirStoreName=store_name,
+            #     identifier=patient_id,
+            #     gender=patient_create_request.gender
+            # ).save()
+            # patient_resource_name = "%s/fhir/Patient/%s" % \
+            #     (store_name, patient_id)
+            # res = PatientCreateResponse(name=patient_resource_name)
+            # status = 201
+        except NotUniqueError as error:
+            status = 409
+            res = Error("Conflict", status, str(error))
+    except Exception as error:
+        status = 500
+        res = Error("Internal error", status, str(error))
+    return res, status
 
 
 def delete_queue(queue_id):  # noqa: E501
