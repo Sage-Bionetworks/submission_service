@@ -10,7 +10,7 @@ from openapi_server.config import Config
 app = connexion.App(__name__, specification_dir='./openapi/')
 app.app.json_encoder = encoder.JSONEncoder
 app.add_api('openapi.yaml',
-            arguments={'title': 'Submission API'},
+            # arguments={'title': 'Submission API'},
             pythonic_params=True)
 
 connect(

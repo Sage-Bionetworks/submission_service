@@ -21,3 +21,15 @@
 #docs/*.md
 # Then explicitly reverse the ignore rule for a single file:
 #!docs/README.md
+
+.travis.yml
+git_push.sh
+setup.py
+
+# this list has been defined after the generation of the initial codebase
+.dockerignore
+.gitignore
+Dockerfile
+requirements.txt
+test-requirements.txt
+tox.ini
