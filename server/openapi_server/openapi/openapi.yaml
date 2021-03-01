@@ -31,159 +31,34 @@ tags:
 - description: Teams
   name: Team
 paths:
-  /computeEnvs:
+  /healthCheck:
     get:
-      description: Returns the available compute environments
-      operationId: list_compute_envs
-      parameters:
-      - description: Maximum number of results returned
-        explode: true
-        in: query
-        name: limit
-        required: false
-        schema:
-          default: 10
-          maximum: 100
-          minimum: 10
-          type: integer
-        style: form
-      - description: Index of the first result that must be returned
-        explode: true
-        in: query
-        name: offset
-        required: false
-        schema:
-          default: 0
-          minimum: 0
-          type: integer
-        style: form
+      description: Get information about the health of the service
+      operationId: get_health_check
       responses:
         "200":
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ListComputeEnvResponse'
+                $ref: '#/components/schemas/HealthCheck'
           description: Success
-        "403":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-          description: Unauthorized
         "404":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
           description: The specified resource was not found
-      summary: List the available compute environments
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: The request cannot be fulfilled due to an unexpected server
+            error
+      summary: Get health check information
       tags:
-      - Compute
-      x-openapi-router-controller: openapi_server.controllers.compute_controller
-    post:
-      description: Creates a compute environment
-      operationId: create_compute_env
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/CreateComputeEnvRequest'
-      responses:
-        "201":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/CreateComputeEnvResponse'
-          description: Success
-        "403":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-          description: Unauthorized
-        "404":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-          description: The specified resource was not found
-        "409":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-          description: The request conflicts with current state of the target resource
-      summary: Create a compute environment
-      tags:
-      - Compute
-      x-openapi-router-controller: openapi_server.controllers.compute_controller
-  /computeEnvs/{computeEnvId}:
-    delete:
-      description: Deletes the compute environment for a given ID
-      operationId: delete_compute_env
-      parameters:
-      - description: The ID of the compute environment
-        explode: false
-        in: path
-        name: computeEnvId
-        required: true
-        schema:
-          type: string
-        style: simple
-      responses:
-        "204":
-          description: The resource was deleted successfully.
-        "403":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-          description: Unauthorized
-        "404":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-          description: The specified resource was not found
-      summary: Delete a compute environment by its ID
-      tags:
-      - Compute
-      x-openapi-router-controller: openapi_server.controllers.compute_controller
-    get:
-      description: Returns the compute env for a given ID
-      operationId: get_compute_env
-      parameters:
-      - description: The ID of the compute environment
-        explode: false
-        in: path
-        name: computeEnvId
-        required: true
-        schema:
-          type: string
-        style: simple
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ComputeEnv'
-          description: Success
-        "403":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-          description: Unauthorized
-        "404":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-          description: The specified resource was not found
-      summary: Get a compute env by its ID
-      tags:
-      - Compute
-      x-openapi-router-controller: openapi_server.controllers.compute_controller
+      - HealthCheck
+      x-openapi-router-controller: openapi_server.controllers.health_check_controller
   /queues:
     get:
       description: Returns the queues
@@ -229,6 +104,13 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
           description: The specified resource was not found
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: The request cannot be fulfilled due to an unexpected server
+            error
       summary: List the available queues
       tags:
       - Queue
@@ -298,6 +180,13 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
           description: The specified resource was not found
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: The request cannot be fulfilled due to an unexpected server
+            error
       summary: Delete a queue by its ID
       tags:
       - Queue
@@ -333,47 +222,14 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
           description: The specified resource was not found
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: The request cannot be fulfilled due to an unexpected server
+            error
       summary: Get a queue by its ID
-      tags:
-      - Queue
-      x-openapi-router-controller: openapi_server.controllers.queue_controller
-    put:
-      description: Updates the queue for a given ID
-      operationId: update_queue
-      parameters:
-      - description: The ID of the queue
-        explode: false
-        in: path
-        name: queueId
-        required: true
-        schema:
-          type: string
-        style: simple
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Queue'
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Queue'
-          description: Success
-        "403":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-          description: Unauthorized
-        "404":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-          description: The specified resource was not found
-      summary: Update a queue by its ID
       tags:
       - Queue
       x-openapi-router-controller: openapi_server.controllers.queue_controller
@@ -430,6 +286,13 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
           description: The specified resource was not found
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: The request cannot be fulfilled due to an unexpected server
+            error
       summary: List the submitted submissions
       tags:
       - Submission
@@ -563,397 +426,6 @@ paths:
       tags:
       - Submission
       x-openapi-router-controller: openapi_server.controllers.submission_controller
-    put:
-      description: Updates the submission for a given ID
-      operationId: update_submission
-      parameters:
-      - description: The ID of the queue
-        explode: false
-        in: path
-        name: queueId
-        required: true
-        schema:
-          type: string
-        style: simple
-      - description: The ID of the submission
-        explode: false
-        in: path
-        name: submissionId
-        required: true
-        schema:
-          type: string
-        style: simple
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Submission'
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Submission'
-          description: Success
-        "403":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-          description: Unauthorized
-        "404":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-          description: The specified resource was not found
-      summary: Update a submission by its ID
-      tags:
-      - Submission
-      x-openapi-router-controller: openapi_server.controllers.submission_controller
-  /queues/{queueId}/submissions/{submissionId}/runs:
-    post:
-      description: Executes a submission
-      operationId: run_submission
-      parameters:
-      - description: The ID of the queue
-        explode: false
-        in: path
-        name: queueId
-        required: true
-        schema:
-          type: string
-        style: simple
-      - description: The ID of the submission
-        explode: false
-        in: path
-        name: submissionId
-        required: true
-        schema:
-          type: string
-        style: simple
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/CreateRunRequest'
-      responses:
-        "201":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/CreateRunResponse'
-          description: Success
-        "403":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-          description: Unauthorized
-        "404":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-          description: The specified resource was not found
-        "409":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-          description: The request conflicts with current state of the target resource
-      summary: Executes a submission
-      tags:
-      - Execution
-      x-openapi-router-controller: openapi_server.controllers.execution_controller
-  /queues/{queueId}/submissions/{submissionId}/runs/{runId}:
-    delete:
-      description: Deletes the run for a submission
-      operationId: delete_submission_run
-      parameters:
-      - description: The ID of the queue
-        explode: false
-        in: path
-        name: queueId
-        required: true
-        schema:
-          type: string
-        style: simple
-      - description: The ID of the run
-        explode: false
-        in: path
-        name: runId
-        required: true
-        schema:
-          type: string
-        style: simple
-      - description: The ID of the submission
-        explode: false
-        in: path
-        name: submissionId
-        required: true
-        schema:
-          type: string
-        style: simple
-      responses:
-        "204":
-          description: The resource was deleted successfully.
-        "403":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-          description: Unauthorized
-        "404":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-          description: The specified resource was not found
-      summary: Delete a submission run
-      tags:
-      - Execution
-      x-openapi-router-controller: openapi_server.controllers.execution_controller
-    get:
-      description: Returns the run for a submission
-      operationId: get_submission_run
-      parameters:
-      - description: The ID of the queue
-        explode: false
-        in: path
-        name: queueId
-        required: true
-        schema:
-          type: string
-        style: simple
-      - description: The ID of the run
-        explode: false
-        in: path
-        name: runId
-        required: true
-        schema:
-          type: string
-        style: simple
-      - description: The ID of the submission
-        explode: false
-        in: path
-        name: submissionId
-        required: true
-        schema:
-          type: string
-        style: simple
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Run'
-          description: Success
-        "403":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-          description: Unauthorized
-        "404":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-          description: The specified resource was not found
-      summary: Get a submission run
-      tags:
-      - Execution
-      x-openapi-router-controller: openapi_server.controllers.execution_controller
-  /queues/{queueId}/submissions/{submissionId}/runs/{runId}/cancel:
-    post:
-      description: Cancels the submission's run for a given run ID. This is dependant
-        on how the compute environment cancels runs.
-      operationId: cancel_submission_run
-      parameters:
-      - description: The ID of the queue
-        explode: false
-        in: path
-        name: queueId
-        required: true
-        schema:
-          type: string
-        style: simple
-      - description: The ID of the run
-        explode: false
-        in: path
-        name: runId
-        required: true
-        schema:
-          type: string
-        style: simple
-      - description: The ID of the submission
-        explode: false
-        in: path
-        name: submissionId
-        required: true
-        schema:
-          type: string
-        style: simple
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Empty'
-      responses:
-        "204":
-          description: The run was cancelled.
-        "403":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-          description: Unauthorized
-        "404":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-          description: The specified resource was not found
-      summary: Cancels a submission's run
-      tags:
-      - Execution
-      x-openapi-router-controller: openapi_server.controllers.execution_controller
-  /queues/{queueId}/submissions/{submissionId}/runs/{runId}/log:
-    get:
-      description: Returns the submission's logs for a given run ID. This is dependant
-        on how the compute environment returns logs.
-      operationId: get_submission_run_log
-      parameters:
-      - description: The ID of the queue
-        explode: false
-        in: path
-        name: queueId
-        required: true
-        schema:
-          type: string
-        style: simple
-      - description: The ID of the run
-        explode: false
-        in: path
-        name: runId
-        required: true
-        schema:
-          type: string
-        style: simple
-      - description: The ID of the submission
-        explode: false
-        in: path
-        name: submissionId
-        required: true
-        schema:
-          type: string
-        style: simple
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Log'
-          description: Success
-        "403":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-          description: Unauthorized
-        "404":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-          description: The specified resource was not found
-      summary: Get a submission's run logs
-      tags:
-      - Execution
-      x-openapi-router-controller: openapi_server.controllers.execution_controller
-  /queues/{queueId}/submissions/{submissionId}/status:
-    get:
-      description: Returns the submission's status for a given ID
-      operationId: get_submission_status
-      parameters:
-      - description: The ID of the queue
-        explode: false
-        in: path
-        name: queueId
-        required: true
-        schema:
-          type: string
-        style: simple
-      - description: The ID of the submission
-        explode: false
-        in: path
-        name: submissionId
-        required: true
-        schema:
-          type: string
-        style: simple
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/SubmissionStatus'
-          description: Success
-        "403":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-          description: Unauthorized
-        "404":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-          description: The specified resource was not found
-      summary: Get a submission's status
-      tags:
-      - Submission
-      x-openapi-router-controller: openapi_server.controllers.submission_controller
-  /teams:
-    post:
-      description: Creates a team for submitting
-      operationId: create_team
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/CreateTeamRequest'
-      responses:
-        "201":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/CreateTeamResponse'
-          description: Success
-        "403":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-          description: Unauthorized
-        "404":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-          description: The specified resource was not found
-        "409":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-          description: The request conflicts with current state of the target resource
-      summary: Create a Team
-      tags:
-      - Team
-      x-openapi-router-controller: openapi_server.controllers.team_controller
 components:
   responses:
     Unauthorized:
@@ -968,6 +440,12 @@ components:
           schema:
             $ref: '#/components/schemas/Error'
       description: The specified resource was not found
+    InternalServerError:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+      description: The request cannot be fulfilled due to an unexpected server error
     Conflict:
       content:
         application/json:
@@ -986,10 +464,14 @@ components:
           type: integer
         links:
           $ref: '#/components/schemas/ListResponseMetadata_links'
+        totalResults:
+          description: The total number of results in the result set
+          type: integer
       required:
       - limit
       - links
       - offset
+      - totalResults
       type: object
     Queue:
       description: A Queue to link submissions to runtime
@@ -1104,9 +586,6 @@ components:
       type: object
     SubmissionStatus:
       description: Submission status
-      example:
-        numberOfRuns: 0
-        status: RECEIVED
       properties:
         status:
           description: Submission status
@@ -1269,185 +748,20 @@ components:
           description: Submission ID
           type: string
       type: object
-    CreateRunRequest:
+    HealthCheck:
+      description: Represents the health of a service
       example:
-        data: data
-        dataVersion: dataVersion
+        status: pass
       properties:
-        data:
-          description: Data location
-          type: string
-        dataVersion:
-          description: Data version
-          type: string
-      type: object
-    CreateRunResponse:
-      example:
-        runId: runId
-      properties:
-        runId:
-          description: workflow run ID
-          type: string
-      type: object
-    Run:
-      example:
-        data: data
-        dataVersion: dataVersion
-        id: id
-        status: QUEUED
-      properties:
-        id:
-          description: Run Id
-          type: string
-        data:
-          description: Data location
-          type: string
-        dataVersion:
-          description: Data version
-          type: string
         status:
-          description: Submission Run status
+          description: Indicates whether the service status is acceptable or not
           enum:
-          - QUEUED
-          - RUNNING
-          - COMPLETE
-          - ERROR
-          - CANCELLED
+          - pass
+          - fail
+          - warn
           type: string
-      type: object
-    Empty:
-      type: object
-    Log:
-      description: Log and other info
-      example:
-        output: output
-        stdout: stdout
-        name: name
-        exitCode: 0
-        startTime: startTime
-        cmd:
-        - cmd
-        - cmd
-        endTime: endTime
-        stderr: stderr
-      properties:
-        name:
-          description: The task or workflow name
-          type: string
-        cmd:
-          description: The command line that was executed
-          items:
-            type: string
-          type: array
-        startTime:
-          description: When the command started executing, in ISO 8601 format "%Y-%m-%dT%H:%M:%SZ"
-          type: string
-        endTime:
-          description: When the command stopped executing (completed, failed, or cancelled),
-            in ISO 8601 format "%Y-%m-%dT%H:%M:%SZ"
-          type: string
-        stdout:
-          description: A URL to retrieve standard output logs of the workflow run
-            or task.  This URL may change between status requests, or may not be available
-            until the task or workflow has finished execution.  Should be available
-            using the same credentials used to access the WES endpoint.
-          type: string
-        stderr:
-          description: A URL to retrieve standard error logs of the workflow run or
-            task.  This URL may change between status requests, or may not be available
-            until the task or workflow has finished execution.  Should be available
-            using the same credentials used to access the WES endpoint.
-          type: string
-        exitCode:
-          description: Exit code of the program
-          type: integer
-        output:
-          description: Output of workflow
-          type: string
-      type: object
-    ComputeEnv:
-      example:
-        apiHost: localhost:8080
-        name: name
-        id: id
-        type: WES
-      properties:
-        id:
-          description: Compute environment ID
-          type: string
-        name:
-          description: Name of compute environment
-          type: string
-        apiHost:
-          default: localhost:8080
-          description: Workflow Execution Service implementation endpoint
-          type: string
-        type:
-          description: Type of Compute Environment
-          enum:
-          - WES
-          - TES
-          type: string
-      type: object
-    ListComputeEnvResponse:
-      allOf:
-      - $ref: '#/components/schemas/ListResponseMetadata'
-      - $ref: '#/components/schemas/ListComputeEnvResponse_allOf'
-      description: A page of queues
-      type: object
-    CreateComputeEnvRequest:
-      description: A workflow Submission
-      example:
-        apiHost: localhost:8080
-        name: name
-        type: WES
-      properties:
-        name:
-          description: Name of compute environment
-          type: string
-        apiHost:
-          default: localhost:8080
-          description: Workflow Execution Service implementation endpoint
-          type: string
-        type:
-          description: Type of Compute Environment
-          enum:
-          - WES
-          - TES
-          type: string
-      type: object
-    CreateComputeEnvResponse:
-      example:
-        computeEnvId: computeEnvId
-      properties:
-        computeEnvId:
-          description: Compute environment ID
-          type: string
-      type: object
-    CreateTeamRequest:
-      example:
-        teamId: teamId
-        name: name
-        description: description
-      properties:
-        teamId:
-          description: ID of team.
-          readOnly: true
-          type: string
-        name:
-          description: Name of team.
-          type: string
-        description:
-          description: Description of Team.
-          type: string
-      type: object
-    CreateTeamResponse:
-      example:
-        teamId: teamId
-      properties:
-        teamId:
-          description: Team ID
-          type: string
+      required:
+      - status
       type: object
     ListResponseMetadata_links:
       description: Links to navigate to different pages of results
@@ -1455,6 +769,7 @@ components:
         next:
           description: Link to the next page of results
           type: string
+      type: object
     ListQueueResponse_allOf:
       properties:
         queues:
@@ -1462,6 +777,7 @@ components:
           items:
             $ref: '#/components/schemas/Queue'
           type: array
+      type: object
     DockerSubmission_docker:
       properties:
         name:
@@ -1477,6 +793,7 @@ components:
       required:
       - digest
       - name
+      type: object
     ListSubmissionResponse_allOf:
       properties:
         submissions:
@@ -1484,10 +801,4 @@ components:
           items:
             $ref: '#/components/schemas/Submission'
           type: array
-    ListComputeEnvResponse_allOf:
-      properties:
-        computeEnvs:
-          description: An array of queues
-          items:
-            $ref: '#/components/schemas/ComputeEnv'
-          type: array
+      type: object
