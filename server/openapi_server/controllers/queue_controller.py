@@ -8,9 +8,10 @@ from openapi_server.models.error import Error  # noqa: E501
 from openapi_server.models.list_queue_response import ListQueueResponse  # noqa: E501
 from openapi_server.models.queue import Queue  # noqa: E501
 from openapi_server import util
+from openapi_server.dbmodels.queue import Queue as DbQueue
 
 
-def create_queue(queue_id):  # noqa: E501
+def create_queue(create_queue_request = None):  # noqa: E501
     """Create a queue
 
     Creates a queue for storing and running of submissions # noqa: E501
@@ -27,17 +28,15 @@ def create_queue(queue_id):  # noqa: E501
             create_queue_request = CreateQueueRequest.from_dict(
                 connexion.request.get_json()
             )
-            print(create_queue_request)
-            # DbPatient(
-            #     resourceName=resource_name,
-            #     fhirStoreName=store_name,
-            #     identifier=patient_id,
-            #     gender=patient_create_request.gender
-            # ).save()
-            # patient_resource_name = "%s/fhir/Patient/%s" % \
-            #     (store_name, patient_id)
-            # res = PatientCreateResponse(name=patient_resource_name)
-            # status = 201
+            DbQueue(
+                name=create_queue_request.name,
+                computeId=create_queue_request.compute_id,
+                workflowFiles=create_queue_request.workflow_files,
+                workflowInput=create_queue_request.workflow_input,
+                submissionType=create_queue_request.submission_type
+            ).save()
+            res = CreateQueueResponse(queue_id=1)
+            status = 201
         except NotUniqueError as error:
             status = 409
             res = Error("Conflict", status, str(error))
