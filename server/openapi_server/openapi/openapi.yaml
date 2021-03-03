@@ -1,4 +1,4 @@
-openapi: 3.0.1
+openapi: 3.0.3
 info:
   contact:
     email: thomas.yu@sagebionetworks.org
@@ -12,15 +12,8 @@ info:
   title: Submission API
   version: 1.0.0
 servers:
-- url: https://sage-bionetworks.github.io/
+- {}
 tags:
-- description: Compute environment
-  name: Compute
-- description: Allow synapse submissions to interact with supported workflow engines
-  externalDocs:
-    description: Mimics GA4GH
-    url: https://github.com/ga4gh/workflow-execution-service-schemas
-  name: Execution
 - description: Ceate and link synapse queues with workflow engines
   name: Queue
 - description: Submission and its metadata
@@ -28,8 +21,8 @@ tags:
     description: More about submission references
     url: https://rest-docs.synapse.org/rest/#org.sagebionetworks.repo.web.controller.EvaluationController
   name: Submission
-- description: Teams
-  name: Team
+- description: Health check
+  name: HealthCheck
 paths:
   /healthCheck:
     get:
@@ -118,6 +111,15 @@ paths:
     post:
       description: Creates a queue for storing and running of submissions
       operationId: create_queue
+      parameters:
+      - description: The ID of the queue that is being created
+        explode: true
+        in: query
+        name: queueId
+        required: true
+        schema:
+          type: string
+        style: form
       requestBody:
         content:
           application/json:
@@ -427,6 +429,30 @@ paths:
       - Submission
       x-openapi-router-controller: openapi_server.controllers.submission_controller
 components:
+  parameters:
+    PageLimit:
+      description: Maximum number of results returned
+      explode: true
+      in: query
+      name: limit
+      required: false
+      schema:
+        default: 10
+        maximum: 100
+        minimum: 10
+        type: integer
+      style: form
+    PageOffset:
+      description: Index of the first result that must be returned
+      explode: true
+      in: query
+      name: offset
+      required: false
+      schema:
+        default: 0
+        minimum: 0
+        type: integer
+      style: form
   responses:
     Unauthorized:
       content:
@@ -555,6 +581,9 @@ components:
       properties:
         name:
           description: Name of Queue
+          maxLength: 60
+          minLength: 3
+          pattern: ^[a-z0-9]+(?:-[a-z0-9]+)*$
           type: string
         computeId:
           description: Compute Environment Id
@@ -575,8 +604,11 @@ components:
           - workflow
           - workflow_inputs
           type: string
+      required:
+      - name
       type: object
     CreateQueueResponse:
+      description: Queue Id
       example:
         queueId: queueId
       properties:
@@ -666,6 +698,17 @@ components:
           description: Worklfow inputs
           type: string
       type: object
+      x-examples:
+        example-1:
+          name: string
+          id: 0
+          submitter: string
+          queueId: string
+          status:
+            status: RECEIVED
+            numberOfRuns: 0
+          workflow: string
+          workflowInputs: string
     Submission:
       oneOf:
       - $ref: '#/components/schemas/DockerSubmission'
@@ -741,6 +784,7 @@ components:
       - $ref: '#/components/schemas/CreateFileSubmissionRequest'
       - $ref: '#/components/schemas/CreateWorkflowSubmissionRequest'
     CreateSubmissionResponse:
+      description: The ID of a submission.
       example:
         submissionId: submissionId
       properties:
