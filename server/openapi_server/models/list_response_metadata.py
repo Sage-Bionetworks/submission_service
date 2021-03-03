@@ -17,7 +17,7 @@ class ListResponseMetadata(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, offset=None, limit=None, links=None):  # noqa: E501
+    def __init__(self, offset=None, limit=None, links=None, total_results=None):  # noqa: E501
         """ListResponseMetadata - a model defined in OpenAPI
 
         :param offset: The offset of this ListResponseMetadata.  # noqa: E501
@@ -26,22 +26,27 @@ class ListResponseMetadata(Model):
         :type limit: int
         :param links: The links of this ListResponseMetadata.  # noqa: E501
         :type links: ListResponseMetadataLinks
+        :param total_results: The total_results of this ListResponseMetadata.  # noqa: E501
+        :type total_results: int
         """
         self.openapi_types = {
             'offset': int,
             'limit': int,
-            'links': ListResponseMetadataLinks
+            'links': ListResponseMetadataLinks,
+            'total_results': int
         }
 
         self.attribute_map = {
             'offset': 'offset',
             'limit': 'limit',
-            'links': 'links'
+            'links': 'links',
+            'total_results': 'totalResults'
         }
 
         self._offset = offset
         self._limit = limit
         self._links = links
+        self._total_results = total_results
 
     @classmethod
     def from_dict(cls, dikt) -> 'ListResponseMetadata':
@@ -126,3 +131,28 @@ class ListResponseMetadata(Model):
             raise ValueError("Invalid value for `links`, must not be `None`")  # noqa: E501
 
         self._links = links
+
+    @property
+    def total_results(self):
+        """Gets the total_results of this ListResponseMetadata.
+
+        The total number of results in the result set  # noqa: E501
+
+        :return: The total_results of this ListResponseMetadata.
+        :rtype: int
+        """
+        return self._total_results
+
+    @total_results.setter
+    def total_results(self, total_results):
+        """Sets the total_results of this ListResponseMetadata.
+
+        The total number of results in the result set  # noqa: E501
+
+        :param total_results: The total_results of this ListResponseMetadata.
+        :type total_results: int
+        """
+        if total_results is None:
+            raise ValueError("Invalid value for `total_results`, must not be `None`")  # noqa: E501
+
+        self._total_results = total_results

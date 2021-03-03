@@ -23,7 +23,7 @@ class ListQueueResponse(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, offset=None, limit=None, links=None, queues=None):  # noqa: E501
+    def __init__(self, offset=None, limit=None, links=None, total_results=None, queues=None):  # noqa: E501
         """ListQueueResponse - a model defined in OpenAPI
 
         :param offset: The offset of this ListQueueResponse.  # noqa: E501
@@ -32,6 +32,8 @@ class ListQueueResponse(Model):
         :type limit: int
         :param links: The links of this ListQueueResponse.  # noqa: E501
         :type links: ListResponseMetadataLinks
+        :param total_results: The total_results of this ListQueueResponse.  # noqa: E501
+        :type total_results: int
         :param queues: The queues of this ListQueueResponse.  # noqa: E501
         :type queues: List[Queue]
         """
@@ -39,6 +41,7 @@ class ListQueueResponse(Model):
             'offset': int,
             'limit': int,
             'links': ListResponseMetadataLinks,
+            'total_results': int,
             'queues': List[Queue]
         }
 
@@ -46,12 +49,14 @@ class ListQueueResponse(Model):
             'offset': 'offset',
             'limit': 'limit',
             'links': 'links',
+            'total_results': 'totalResults',
             'queues': 'queues'
         }
 
         self._offset = offset
         self._limit = limit
         self._links = links
+        self._total_results = total_results
         self._queues = queues
 
     @classmethod
@@ -137,6 +142,31 @@ class ListQueueResponse(Model):
             raise ValueError("Invalid value for `links`, must not be `None`")  # noqa: E501
 
         self._links = links
+
+    @property
+    def total_results(self):
+        """Gets the total_results of this ListQueueResponse.
+
+        The total number of results in the result set  # noqa: E501
+
+        :return: The total_results of this ListQueueResponse.
+        :rtype: int
+        """
+        return self._total_results
+
+    @total_results.setter
+    def total_results(self, total_results):
+        """Sets the total_results of this ListQueueResponse.
+
+        The total number of results in the result set  # noqa: E501
+
+        :param total_results: The total_results of this ListQueueResponse.
+        :type total_results: int
+        """
+        if total_results is None:
+            raise ValueError("Invalid value for `total_results`, must not be `None`")  # noqa: E501
+
+        self._total_results = total_results
 
     @property
     def queues(self):

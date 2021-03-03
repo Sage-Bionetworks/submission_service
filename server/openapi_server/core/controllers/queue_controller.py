@@ -6,29 +6,43 @@ from openapi_server.models.create_queue_response import CreateQueueResponse  # n
 from openapi_server.models.error import Error  # noqa: E501
 from openapi_server.models.list_queue_response import ListQueueResponse  # noqa: E501
 from openapi_server.models.queue import Queue  # noqa: E501
+from openapi_server.dbmodels import DbQueue
 from openapi_server import util
-from openapi_server.core.controllers import queue_controller as controller
 
 
-def create_queue(queue_id, create_queue_request=None):  # noqa: E501
+def create_queue(create_queue_request=None):  # noqa: E501
     """Create a queue
 
     Creates a queue for storing and running of submissions # noqa: E501
 
-    :param queue_id: The ID of the queue that is being created
-    :type queue_id: str
     :param create_queue_request: 
     :type create_queue_request: dict | bytes
 
     :rtype: CreateQueueResponse
     """
-    if connexion.request.is_json:
-        create_queue_request = CreateQueueRequest.from_dict(connexion.request.get_json())  # noqa: E501
-    return controller.create_queue(
-        queue_id=queue_id,
-        create_queue_request=create_queue_request
-    )
-
+    res = None
+    status = None
+    try:
+        try:
+            create_queue_request = CreateQueueRequest.from_dict(
+                connexion.request.get_json()
+            )
+            DbQueue(
+                name=create_queue_request.name,
+                computeId=create_queue_request.compute_id,
+                workflowFiles=create_queue_request.workflow_files,
+                workflowInput=create_queue_request.workflow_input,
+                submissionType=create_queue_request.submission_type
+            ).save()
+            res = CreateQueueResponse(queue_id=1)
+            status = 201
+        except NotUniqueError as error:
+            status = 409
+            res = Error("Conflict", status, str(error))
+    except Exception as error:
+        status = 500
+        res = Error("Internal error", status, str(error))
+    return res, status
 
 def delete_queue(queue_id):  # noqa: E501
     """Delete a queue by its ID
@@ -40,9 +54,7 @@ def delete_queue(queue_id):  # noqa: E501
 
     :rtype: None
     """
-    return controller.delete_queue(
-        queue_id=queue_id
-    )
+    return 'do some magic!'
 
 
 def get_queue(queue_id):  # noqa: E501
@@ -55,9 +67,7 @@ def get_queue(queue_id):  # noqa: E501
 
     :rtype: Queue
     """
-    return controller.get_queue(
-        queue_id=queue_id
-    )
+    return 'do some magic!'
 
 
 def list_queues(limit=None, offset=None):  # noqa: E501
@@ -72,7 +82,4 @@ def list_queues(limit=None, offset=None):  # noqa: E501
 
     :rtype: ListQueueResponse
     """
-    return controller.list_queues(
-        limit=limit,
-        offset=offset
-    )
+    return 'do some magic!'

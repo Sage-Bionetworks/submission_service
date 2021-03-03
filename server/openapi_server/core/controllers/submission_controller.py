@@ -7,7 +7,6 @@ from openapi_server.models.error import Error  # noqa: E501
 from openapi_server.models.list_submission_response import ListSubmissionResponse  # noqa: E501
 from openapi_server.models.submission import Submission  # noqa: E501
 from openapi_server import util
-from openapi_server.core.controllers import submission_controller as controller
 
 
 def create_submission(queue_id, create_submission_request=None):  # noqa: E501
@@ -24,10 +23,7 @@ def create_submission(queue_id, create_submission_request=None):  # noqa: E501
     """
     if connexion.request.is_json:
         create_submission_request = CreateSubmissionRequest.from_dict(connexion.request.get_json())  # noqa: E501
-    return controller.create_submission(
-        queue_id=queue_id,
-        create_submission_request=create_submission_request
-    )
+    return 'do some magic!'
 
 
 def delete_submission(queue_id, submission_id):  # noqa: E501
@@ -42,10 +38,7 @@ def delete_submission(queue_id, submission_id):  # noqa: E501
 
     :rtype: None
     """
-    return controller.delete_submission(
-        queue_id=queue_id,
-        submission_id=submission_id
-    )
+    return 'do some magic!'
 
 
 def get_submission(queue_id, submission_id):  # noqa: E501
@@ -60,10 +53,7 @@ def get_submission(queue_id, submission_id):  # noqa: E501
 
     :rtype: Submission
     """
-    return controller.get_submission(
-        queue_id=queue_id,
-        submission_id=submission_id
-    )
+    return 'do some magic!'
 
 
 def list_submissions(queue_id, limit=None, offset=None):  # noqa: E501
@@ -80,8 +70,4 @@ def list_submissions(queue_id, limit=None, offset=None):  # noqa: E501
 
     :rtype: ListSubmissionResponse
     """
-    return controller.list_submissions(
-        queue_id=queue_id,
-        limit=limit,
-        offset=offset
-    )
+    return 'do some magic!'
